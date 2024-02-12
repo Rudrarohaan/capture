@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front Camera Attributes</title>
+</head>
+<body>
+
+<script>
+    // Check if the browser supports the getUserMedia API
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        // Access the front camera
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+            .then((stream) => {
+                const video = document.createElement('video');
+                document.body.appendChild(video);
+
+                // Display the video stream
+                video.srcObject = stream;
+                video.play();
+
+                // Get video track to access capabilities
+                const track = stream.getVideoTracks()[0];
+
+                // Log supported capabilities
+                const capabilities = track.getCapabilities();
+                console.log('Supported Image Sizes:', capabilities.width, 'x', capabilities.height);
+
+                // Stop the stream when done
+                setTimeout(() => {
+                    stream.getTracks().forEach(track => track.stop());
+                }, 5000); // Stop after 5 seconds, adjust as needed
+            })
+            .catch((error) => {
+                console.error('Error accessing camera:', error);
+            });
+    } else {
+        console.error('getUserMedia not supported in this browser');
+    }
+</script>
+
+</body>
+</html>
